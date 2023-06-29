@@ -80,6 +80,8 @@ android {
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
         versionName "1.0"
+        multiDexEnabled true
+        missingDimensionStrategy 'react-native-camera', 'general'
     }
     signingConfigs {
         debug {
@@ -91,11 +93,13 @@ android {
     }
     buildTypes {
         debug {
+             buildConfigField "String", "CODEPUSH_KEY", '"j3FOEdHe-RVRiMI7c6XyKl7O6LJhN1khqulLg"'
             signingConfig signingConfigs.debug
         }
         release {
             // Caution! In production, you need to generate your own keystore file.
             // see https://reactnative.dev/docs/signed-apk-android.
+            buildConfigField "String", "CODEPUSH_KEY", '"cPveGAyMEVUJOMuSCLUWhcqOPwLIN1khqulLg"'
             signingConfig signingConfigs.debug
             minifyEnabled enableProguardInReleaseBuilds
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
@@ -106,8 +110,15 @@ android {
 dependencies {
     // The version of react-native is set by the React Native Gradle Plugin
     implementation("com.facebook.react:react-android")
+    implementation 'com.android.support:multidex:1.0.3'
+    implementation 'com.pusher:pusher-websocket-android:0.5.0'
+    implementation 'com.google.firebase:firebase-messaging:20.0.0'
 
-    debugImplementation("com.facebook.flipper:flipper:${FLIPPER_VERSION}")
+    implementation project(':react-native-pusher-push-notifications')
+    implementation 'com.pusher:push-notifications-android:1.4.4'
+
+    implementation project(':rc-mobile-base')
+         debugImplementation("com.facebook.flipper:flipper:${FLIPPER_VERSION}")
     debugImplementation("com.facebook.flipper:flipper-network-plugin:${FLIPPER_VERSION}") {
         exclude group:'com.squareup.okhttp3', module:'okhttp'
     }
@@ -119,5 +130,8 @@ dependencies {
         implementation jscFlavor
     }
 }
+
+apply plugin: 'com.google.gms.google-services'
+
 
 apply from: file("../../node_modules/@react-native-community/cli-platform-android/native_modules.gradle"); applyNativeModulesAppBuildGradle(project)
